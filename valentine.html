@@ -1,0 +1,229 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Be My Valentine ❤️</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: "Segoe UI", sans-serif;
+    background: linear-gradient(135deg, #ff5f9e, #ff8ccf);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+
+  /* Floating hearts */
+  .heart-bg {
+    position: fixed;
+    bottom: -40px;
+    pointer-events: none;
+    animation: floatUp linear forwards;
+    opacity: 0.7;
+  }
+
+  @keyframes floatUp {
+    to {
+      transform: translateY(-120vh) scale(1.5);
+      opacity: 0;
+    }
+  }
+
+  .card {
+    background: rgba(255,255,255,0.15);
+    padding: 30px 25px;
+    border-radius: 22px;
+    text-align: center;
+    width: 360px;
+    max-width: 90%;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    z-index: 2;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  .names {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+  }
+
+  .heart {
+    font-size: 3rem;
+    animation: pulse 1.4s infinite;
+  }
+
+  @keyframes pulse {
+    50% { transform: scale(1.2); }
+  }
+
+  .buttons {
+    position: relative;
+    height: 130px;
+    margin-top: 25px;
+  }
+
+  button {
+    font-size: 1.1rem;
+    padding: 12px 24px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+  }
+
+  #yesBtn {
+    background: #ff2e63;
+    color: white;
+  }
+
+  #noBtn {
+    position: absolute;
+    background: white;
+    color: #ff2e63;
+    left: 50%;
+    top: 65px;
+    transform: translateX(-50%);
+  }
+
+  .message {
+    display: none;
+    margin-top: 20px;
+    font-size: 1.3rem;
+  }
+
+  /* Confetti */
+  .confetti {
+    position: fixed;
+    width: 8px;
+    height: 14px;
+    top: -20px;
+    animation: fall linear forwards;
+    z-index: 5;
+  }
+
+  @keyframes fall {
+    to {
+      transform: translateY(110vh) rotate(720deg);
+      opacity: 0;
+    }
+  }
+
+  /* Fireworks */
+  .firework {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    animation: explode 1.2s ease-out forwards;
+    z-index: 4;
+  }
+
+  @keyframes explode {
+    from {
+      transform: scale(0.2);
+      opacity: 1;
+    }
+    to {
+      transform: translate(var(--x), var(--y)) scale(1);
+      opacity: 0;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h1>Will you be my Valentine?</h1>
+  <div class="names">
+    <span id="fromName"></span> ❤️ <span id="toName"></span>
+  </div>
+
+  <div class="heart">❤️</div>
+
+  <div class="buttons">
+    <button id="yesBtn">Yes 💕</button>
+    <button id="noBtn">No 🙈</button>
+  </div>
+
+  <div class="message" id="loveMessage">
+    YESSS!! 🎆💖  
+    Best Valentine ever 🥰
+  </div>
+</div>
+
+<script>
+  /* Names */
+  const p = new URLSearchParams(location.search);
+  fromName.textContent = p.get("from") || "Me";
+  toName.textContent = p.get("to") || "You";
+
+  /* No button escape */
+  function moveNo() {
+    noBtn.style.transform =
+      `translate(${Math.random()*220-110}px, ${Math.random()*120-60}px)`;
+  }
+  noBtn.addEventListener("mouseover", moveNo);
+  noBtn.addEventListener("touchstart", moveNo);
+
+  /* Confetti */
+  function confettiBurst() {
+    for (let i = 0; i < 80; i++) {
+      const c = document.createElement("div");
+      c.className = "confetti";
+      c.style.left = Math.random() * 100 + "vw";
+      c.style.background = `hsl(${Math.random()*360},100%,70%)`;
+      c.style.animationDuration = 2 + Math.random()*2 + "s";
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 4000);
+    }
+  }
+
+  /* Fireworks */
+  function fireworks() {
+    for (let i = 0; i < 6; i++) {
+      const centerX = Math.random() * window.innerWidth;
+      const centerY = Math.random() * window.innerHeight / 2;
+
+      for (let j = 0; j < 25; j++) {
+        const f = document.createElement("div");
+        f.className = "firework";
+        f.style.left = centerX + "px";
+        f.style.top = centerY + "px";
+        f.style.background = `hsl(${Math.random()*360},100%,70%)`;
+        f.style.setProperty("--x", Math.random()*200-100 + "px");
+        f.style.setProperty("--y", Math.random()*200-100 + "px");
+        document.body.appendChild(f);
+        setTimeout(() => f.remove(), 1300);
+      }
+    }
+  }
+
+  yesBtn.addEventListener("click", () => {
+    loveMessage.style.display = "block";
+    confettiBurst();
+    fireworks();
+  });
+
+  /* Floating hearts */
+  setInterval(() => {
+    const h = document.createElement("div");
+    h.className = "heart-bg";
+    h.textContent = "❤️";
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.fontSize = 16 + Math.random()*24 + "px";
+    h.style.animationDuration = 6 + Math.random()*4 + "s";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 10000);
+  }, 500);
+</script>
+
+</body>
+</html>
