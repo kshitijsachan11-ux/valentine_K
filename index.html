@@ -167,7 +167,6 @@
   ">🔇 Muted</button>
 </div>
 
-<!-- BACKGROUND MUSIC -->
 <audio id="bgMusic" autoplay muted loop preload="auto">
   <source src="music.mp3" type="audio/mpeg">
 </audio>
@@ -242,6 +241,8 @@
   yesBtn.addEventListener("click", () => {
     loveMessage.style.display = "block";
     photo.style.display = "block";
+    noBtn.style.display = "none"; // ✅ NO BUTTON DISAPPEARS
+
     confettiBurst();
     fireworks();
 
