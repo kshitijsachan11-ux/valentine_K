@@ -18,7 +18,6 @@
     color: white;
   }
 
-  /* Floating hearts */
   .heart-bg {
     position: fixed;
     bottom: -40px;
@@ -53,7 +52,6 @@
     margin-bottom: 15px;
   }
 
-  /* Photo (hidden initially) */
   .photo {
     width: 180px;
     height: 180px;
@@ -66,14 +64,8 @@
   }
 
   @keyframes photoReveal {
-    from {
-      transform: scale(0.5);
-      opacity: 0;
-    }
-    to {
-      transform: scale(1);
-      opacity: 1;
-    }
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
   }
 
   .buttons {
@@ -111,7 +103,6 @@
     font-size: 1.3rem;
   }
 
-  /* Confetti */
   .confetti {
     position: fixed;
     width: 8px;
@@ -128,7 +119,6 @@
     }
   }
 
-  /* Fireworks */
   .firework {
     position: fixed;
     width: 6px;
@@ -156,8 +146,7 @@
     <span id="fromName"></span> ❤️ <span id="toName"></span>
   </div>
 
-  <!-- Photo reveal -->
-  <img src="photo.jpg" alt="Our Photo ❤️" class="photo" id="photo">
+  <img src="photo.png" alt="Our Photo ❤️" class="photo" id="photo">
 
   <div class="buttons">
     <button id="yesBtn">Yes 💕</button>
@@ -178,16 +167,22 @@
   ">🔇 Muted</button>
 </div>
 
-<!-- Background Music -->
-<audio id="bgMusic" loop muted autoplay>
+<!-- BACKGROUND MUSIC -->
+<audio id="bgMusic" autoplay muted loop preload="auto">
   <source src="music.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-  /* Names */
   const p = new URLSearchParams(location.search);
   fromName.textContent = p.get("from") || "Me";
   toName.textContent = p.get("to") || "You";
+
+  const bgMusic = document.getElementById("bgMusic");
+  const muteBtn = document.getElementById("muteBtn");
+
+  document.addEventListener("DOMContentLoaded", () => {
+    bgMusic.play().catch(() => {});
+  });
 
   let yesScale = 1;
   let noClickCount = 0;
@@ -244,33 +239,32 @@
     }
   }
 
-  /* YES CLICK */
   yesBtn.addEventListener("click", () => {
     loveMessage.style.display = "block";
-    photo.style.display = "block";   // 📸 REVEAL PHOTO
+    photo.style.display = "block";
     confettiBurst();
     fireworks();
-  });
 
-  /* Enable music on first interaction */
-  function enableMusic() {
     bgMusic.muted = false;
     bgMusic.volume = 0.6;
+    bgMusic.play();
     muteBtn.textContent = "🔊 Music";
-    document.removeEventListener("click", enableMusic);
-    document.removeEventListener("touchstart", enableMusic);
-  }
-
-  document.addEventListener("click", enableMusic);
-  document.addEventListener("touchstart", enableMusic);
+  });
 
   muteBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    bgMusic.muted = !bgMusic.muted;
-    muteBtn.textContent = bgMusic.muted ? "🔇 Muted" : "🔊 Music";
+
+    if (bgMusic.muted) {
+      bgMusic.muted = false;
+      bgMusic.volume = 0.6;
+      bgMusic.play();
+      muteBtn.textContent = "🔊 Music";
+    } else {
+      bgMusic.muted = true;
+      muteBtn.textContent = "🔇 Muted";
+    }
   });
 
-  /* Floating hearts */
   setInterval(() => {
     const h = document.createElement("div");
     h.className = "heart-bg";
