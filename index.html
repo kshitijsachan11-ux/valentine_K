@@ -18,6 +18,24 @@
     color: white;
   }
 
+  /* Banner */
+  .banner {
+    position: fixed;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ff2e63;
+    padding: 12px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    transition: top 0.4s ease;
+    z-index: 100;
+  }
+
+  .banner.show {
+    top: 20px;
+  }
+
   .card {
     background: rgba(255,255,255,0.15);
     padding: 30px 25px;
@@ -59,6 +77,8 @@
 
   .buttons {
     margin-top: 20px;
+    position: relative;
+    height: 120px;
   }
 
   button {
@@ -76,6 +96,7 @@
   }
 
   #noBtn {
+    position: absolute;
     background: white;
     color: #ff2e63;
   }
@@ -86,6 +107,7 @@
     font-size: 1.3rem;
   }
 
+  /* Confetti */
   .confetti {
     position: fixed;
     width: 8px;
@@ -102,6 +124,7 @@
     }
   }
 
+  /* Fireworks */
   .firework {
     position: fixed;
     width: 6px;
@@ -118,24 +141,30 @@
     }
   }
 
-  .heart-bg {
+  /* Rose petals */
+  .petal {
     position: fixed;
-    bottom: -40px;
-    pointer-events: none;
-    animation: floatUp linear forwards;
-    opacity: 0.7;
+    top: -20px;
+    font-size: 22px;
+    animation: petalFall linear forwards;
+    z-index: 3;
   }
 
-  @keyframes floatUp {
+  @keyframes petalFall {
     to {
-      transform: translateY(-120vh) scale(1.5);
+      transform: translateY(110vh) rotate(360deg);
       opacity: 0;
     }
   }
+
 </style>
 </head>
 
 <body>
+
+<div class="banner" id="banner">
+  Aise kya krte ho, maan jao na
+</div>
 
 <div class="card">
 
@@ -145,11 +174,8 @@
     billu ❤️ billain
   </div>
 
-  <!-- First photo (before Yes) -->
-  <img src="before.png" alt="Before Photo" class="photo" id="beforePhoto">
-
-  <!-- Second photo (after Yes) -->
-  <img src="after.png" alt="After Photo" class="photo" id="afterPhoto">
+  <img src="before.png" class="photo" id="beforePhoto">
+  <img src="after.png" class="photo" id="afterPhoto">
 
   <div class="buttons">
     <button id="yesBtn">Yes 💕</button>
@@ -183,13 +209,45 @@
   const loveMessage = document.getElementById("loveMessage");
   const beforePhoto = document.getElementById("beforePhoto");
   const afterPhoto = document.getElementById("afterPhoto");
+  const banner = document.getElementById("banner");
 
   document.addEventListener("DOMContentLoaded", () => {
     bgMusic.play().catch(() => {});
   });
 
+  /* No button movement */
+  let noClickCount = 0;
+
+  function moveNo() {
+    const x = Math.random() * 200 - 100;
+    const y = Math.random() * 100 - 50;
+    noBtn.style.transform = `translate(${x}px, ${y}px)`;
+
+    noClickCount++;
+
+    if (noClickCount === 4) {
+      banner.classList.add("show");
+    }
+  }
+
+  noBtn.addEventListener("click", moveNo);
+  noBtn.addEventListener("mouseover", moveNo);
+  noBtn.addEventListener("touchstart", moveNo);
+
+  /* Rose petals */
+  setInterval(() => {
+    const petal = document.createElement("div");
+    petal.className = "petal";
+    petal.textContent = "🌹";
+    petal.style.left = Math.random() * 100 + "vw";
+    petal.style.animationDuration = 4 + Math.random()*3 + "s";
+    document.body.appendChild(petal);
+    setTimeout(() => petal.remove(), 7000);
+  }, 500);
+
+  /* Celebration */
   function confettiBurst() {
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < 30; i++) {
       const c = document.createElement("div");
       c.className = "confetti";
       c.style.left = Math.random() * 100 + "vw";
@@ -217,11 +275,8 @@
     }
   }
 
-  let celebrationInterval;
-
   yesBtn.addEventListener("click", () => {
     loveMessage.style.display = "block";
-
     yesBtn.style.display = "none";
     noBtn.style.display = "none";
 
@@ -233,7 +288,7 @@
     bgMusic.play();
     muteBtn.textContent = "🔊 Music";
 
-    celebrationInterval = setInterval(() => {
+    setInterval(() => {
       confettiBurst();
       fireworks();
     }, 1500);
@@ -250,17 +305,6 @@
       muteBtn.textContent = "🔇 Muted";
     }
   });
-
-  setInterval(() => {
-    const h = document.createElement("div");
-    h.className = "heart-bg";
-    h.textContent = "❤️";
-    h.style.left = Math.random() * 100 + "vw";
-    h.style.fontSize = 16 + Math.random()*24 + "px";
-    h.style.animationDuration = 6 + Math.random()*4 + "s";
-    document.body.appendChild(h);
-    setTimeout(() => h.remove(), 10000);
-  }, 600);
 </script>
 
 </body>
